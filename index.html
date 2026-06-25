@@ -1,273 +1,481 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Flow Drift | soendx </title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap');
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#050505" />
+  <meta id="metaDescription" name="description" content="soendx mobil oyun portföyü: Pulpy: Fruit Match ve Flow Drift." />
+  <title>soendx | Mobil Oyunlar</title>
+  <style>
+    :root {
+      --bg: #050505;
+      --panel: #101010;
+      --line: #2b2b2b;
+      --text: #f5f5f5;
+      --muted: #a1a1a1;
+      --pulpy: #ffbd18;
+      --drift: #ff4d38;
+    }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-width: 320px;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
 
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #0f1115; /* Göz yormayan mat koyu arka plan */
-            color: #ffffff;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-        }
+    .wrap { width: min(1080px, calc(100% - 36px)); margin: 0 auto; }
 
-        /* Minimalist Üst Bar (Dil Seçici) */
-        .top-bar {
-            width: 100%;
-            padding: 20px 30px;
-            display: flex;
-            justify-content: flex-end;
-        }
+    header {
+      height: 86px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      border-bottom: 1px solid #151515;
+    }
 
-        .lang-switch {
-            display: flex;
-            gap: 5px;
-            background: #1a1d24;
-            padding: 5px;
-            border-radius: 12px;
-            border: 1px solid #2a2f3a;
-        }
+    .brand {
+      color: #fff;
+      text-decoration: none;
+      font-size: 1.45rem;
+      font-weight: 900;
+      letter-spacing: -0.05em;
+    }
+    .brand span { color: #ff4d38; }
 
-        .lang-btn {
-            cursor: pointer;
-            color: #718096;
-            font-size: 0.9rem;
-            font-weight: 600;
-            padding: 6px 14px;
-            border-radius: 8px;
-            transition: all 0.2s ease;
-        }
+    .header-actions { display: flex; align-items: center; gap: 13px; }
+    .header-label { font-size: .76rem; color: var(--muted); letter-spacing: .13em; text-transform: uppercase; }
+    .language-select {
+      min-height: 35px;
+      padding: 0 29px 0 11px;
+      border: 1px solid #2d2d2d;
+      border-radius: 9px;
+      color: #e8e8e8;
+      background: #111;
+      font: inherit;
+      font-size: .78rem;
+      font-weight: 800;
+      letter-spacing: .05em;
+      cursor: pointer;
+      outline: none;
+    }
+    .language-select:hover, .language-select:focus-visible { border-color: #707070; }
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
 
-        .lang-btn:hover { color: #fff; }
-        .lang-btn.active { background: #ff3f34; color: #fff; }
+    .intro { padding: 58px 0 34px; max-width: 680px; }
+    .eyebrow { margin: 0 0 13px; color: #8f8f8f; font-size: .78rem; letter-spacing: .14em; text-transform: uppercase; font-weight: 800; }
+    h1 { margin: 0; font-size: clamp(2.3rem, 7vw, 4.7rem); line-height: .98; letter-spacing: -0.065em; }
+    .intro p:last-child { margin: 20px 0 0; color: #bababa; font-size: clamp(1rem, 2.2vw, 1.16rem); line-height: 1.65; max-width: 600px; }
 
-        /* Ana İçerik Alanı */
-        .container {
-            max-width: 700px;
-            width: 90%;
-            text-align: center;
-            padding: 20px 0 60px 0;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
+    .picker { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin: 18px 0 28px; }
+    .game-choice {
+      min-height: 122px;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      cursor: pointer;
+      padding: 15px;
+      color: #fff;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      text-align: left;
+      font: inherit;
+      appearance: none;
+      -webkit-appearance: none;
+      transition: transform .18s ease, border-color .18s ease, background .18s ease, box-shadow .18s ease;
+      touch-action: manipulation;
+    }
+    .game-choice:hover, .game-choice:focus-visible { transform: translateY(-2px); background: #151515; outline: none; }
+    .game-choice:focus-visible { box-shadow: 0 0 0 3px rgba(255,255,255,.26); }
+    .game-choice.active { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+    .game-choice img { width: 78px; height: 78px; border-radius: 18px; display: block; object-fit: cover; background: #232323; flex: 0 0 auto; }
+    .game-choice strong { display: block; font-size: 1.12rem; letter-spacing: -.025em; }
+    .game-choice small { display: block; margin-top: 5px; color: #aaa; font-size: .86rem; line-height: 1.3; }
 
-        header { margin-bottom: 40px; }
+    .spotlight {
+      --accent: var(--pulpy);
+      display: grid;
+      grid-template-columns: minmax(220px, 0.82fr) minmax(0, 1.18fr);
+      gap: clamp(25px, 6vw, 70px);
+      align-items: center;
+      padding: clamp(22px, 4vw, 42px);
+      margin-bottom: 55px;
+      background: linear-gradient(135deg, #151515 0%, #0d0d0d 62%, #111 100%);
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      overflow: hidden;
+    }
+    .phone-frame { width: min(100%, 290px); justify-self: center; padding: 8px; background: #000; border: 1px solid #3b3b3b; border-radius: 28px; box-shadow: 0 24px 48px rgba(0,0,0,.45); }
+    .phone-frame img { display: block; width: 100%; aspect-ratio: 9 / 16; object-fit: cover; border-radius: 20px; background: #222; }
 
-        .studio-name {
-            font-size: 2.2rem;
-            font-weight: 800;
-            letter-spacing: 2px;
-            color: #fff;
-        }
+    .game-kicker { margin: 0 0 9px; color: var(--accent); font-size: .78rem; letter-spacing: .14em; text-transform: uppercase; font-weight: 900; }
+    h2 { margin: 0; font-size: clamp(2rem, 4vw, 3.25rem); letter-spacing: -.055em; line-height: 1; }
+    #gameDesc { margin: 17px 0 0; color: #d0d0d0; line-height: 1.68; font-size: 1rem; max-width: 520px; }
+    .tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 22px 0 27px; }
+    .tag { padding: 8px 11px; border-radius: 999px; border: 1px solid #343434; background: #0b0b0b; color: #e0e0e0; font-size: .8rem; font-weight: 700; }
+    .play-button { display: inline-flex; align-items: center; justify-content: center; min-height: 49px; padding: 0 20px; border-radius: 11px; text-decoration: none; color: #111; background: var(--accent); font-weight: 900; letter-spacing: -.01em; transition: filter .18s ease, transform .18s ease; }
+    .play-button:hover, .play-button:focus-visible { filter: brightness(1.08); transform: translateY(-1px); outline: none; }
 
-        .studio-name span { color: #ff3f34; }
+    .simple-note { margin: -20px 0 56px; color: #767676; font-size: .82rem; text-align: center; }
+    footer { padding: 27px 0 36px; border-top: 1px solid #151515; color: #6e6e6e; font-size: .82rem; text-align: center; }
 
-        .subtitle {
-            font-size: 0.95rem;
-            color: #a0aec0;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-top: 5px;
-        }
-
-        .game-title {
-            font-size: 3.5rem;
-            font-weight: 800;
-            margin-bottom: 15px;
-            background: linear-gradient(90deg, #ff3f34, #ffa801);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .game-desc {
-            font-size: 1.05rem;
-            color: #cbd5e0;
-            line-height: 1.6;
-            margin-bottom: 30px;
-        }
-
-        /* Özellik Etiketleri */
-        .features {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-bottom: 40px;
-        }
-
-        .badge {
-            background: #1a1d24;
-            border: 1px solid #2a2f3a;
-            color: #e2e8f0;
-            padding: 8px 16px;
-            border-radius: 6px;
-            font-weight: 600;
-            font-size: 0.85rem;
-        }
-
-        /* Oyna Butonu */
-        .cta-button {
-            display: inline-block;
-            background: #ff3f34;
-            color: #fff;
-            text-decoration: none;
-            padding: 16px 0;
-            border-radius: 8px;
-            font-size: 1.1rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: background 0.2s ease;
-            width: 100%;
-            max-width: 350px;
-        }
-
-        .cta-button:hover { background: #e6392f; }
-
-        /* Sosyal Medya Butonları */
-        .social-links {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-top: 20px;
-            width: 100%;
-            max-width: 350px;
-        }
-
-        .social-btn {
-            flex: 1;
-            padding: 12px 0;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 600;
-            color: #fff;
-            background: #1a1d24;
-            border: 1px solid #2a2f3a;
-            transition: background 0.2s ease;
-        }
-
-        .social-btn:hover { background: #2a2f3a; }
-
-        /* Footer */
-        footer {
-            width: 100%;
-            text-align: center;
-            padding: 30px 20px;
-            border-top: 1px solid #1a1d24;
-            color: #718096;
-            font-size: 0.85rem;
-        }
-
-        footer a { color: #ff3f34; text-decoration: none; }
-        footer a:hover { text-decoration: underline; }
-
-        /* MOBİL UYUMLULUK (Telefonda kusursuz görünmesi için) */
-        @media (max-width: 600px) {
-            .game-title { font-size: 2.8rem; }
-            .studio-name { font-size: 1.8rem; }
-            .game-desc { font-size: 0.95rem; padding: 0 10px; }
-            .top-bar { padding: 15px 20px; }
-        }
-    </style>
+    @media (max-width: 720px) {
+      .intro { padding-top: 42px; }
+      .picker { grid-template-columns: 1fr; }
+      .spotlight { grid-template-columns: 1fr; padding: 22px; }
+      .spotlight-copy { text-align: center; }
+      .tags { justify-content: center; }
+      .phone-frame { width: min(100%, 245px); }
+      .header-label { display: none; }
+    }
+  </style>
 </head>
 <body>
+  <div class="wrap">
+    <header>
+      <a class="brand" href="#top" aria-label="soendx home">soendx<span>.</span></a>
+      <div class="header-actions">
+        <div class="header-label" id="headerLabel">Mobil oyunlar</div>
+        <label class="visually-hidden" id="languageLabel" for="languageSelect">Dil seç</label>
+        <select class="language-select" id="languageSelect" aria-labelledby="languageLabel">
+          <option value="tr">TR</option>
+          <option value="en">EN</option>
+          <option value="es">ES</option>
+          <option value="it">IT</option>
+          <option value="fr">FR</option>
+        </select>
+      </div>
+    </header>
 
-    <div class="top-bar">
-        <div class="lang-switch">
-            <div class="lang-btn" id="btn-tr" onclick="changeLanguage('tr')">TR</div>
-            <div class="lang-btn" id="btn-en" onclick="changeLanguage('en')">EN</div>
+    <main id="top">
+      <section class="intro">
+        <p class="eyebrow" id="introEyebrow">Bağımsız oyunlar</p>
+        <h1 id="introTitle">Küçük ekranda<br>iyi hissettiren oyunlar.</h1>
+        <p id="introDescription">soendx, mobilde hızlı anlaşılır ama tekrar açmak isteyeceğin oyunlar geliştirir.</p>
+      </section>
+
+      <section class="picker" id="gamePicker" aria-label="Oyun seçimi">
+        <button class="game-choice active" type="button" data-game="pulpy" style="--accent: var(--pulpy);" aria-pressed="true">
+          <img id="pulpyIcon" src="https://play-lh.googleusercontent.com/r6ia1quX_-8BqVMe-MgzG2Alm2Iit9qBd9GGWixjO7qDo4yl77pTnIzPKMew64HcZlcaKsveiXys2R4nIc1dbQA%3Dw240-h480" alt="Pulpy: Fruit Match uygulama ikonu" />
+          <span><strong>Pulpy: Fruit Match</strong><small id="pulpyCardSubtitle">Rahatlatıcı meyve bulmacası</small></span>
+        </button>
+        <button class="game-choice" type="button" data-game="flow" style="--accent: var(--drift);" aria-pressed="false">
+          <img id="flowIcon" src="https://play-lh.googleusercontent.com/-Iyw6QWV49vUZL4iacO4-vnbCEGoidlLKBZuw14pn-_r9qJVFwUKDFks7JZwFVN8jEnYZvM1oSZxMx9lj1jX8g%3Dw240-h480" alt="Flow Drift uygulama ikonu" />
+          <span><strong>Flow Drift</strong><small id="flowCardSubtitle">Saf arcade drift deneyimi</small></span>
+        </button>
+      </section>
+
+      <section class="spotlight" id="spotlight" aria-live="polite">
+        <div class="phone-frame">
+          <img id="gameShot" src="https://play-lh.googleusercontent.com/jf_eChNXA_0KMXRN4fyOEXhGVl-d_doSK15Aez_glq3wkV5m6_fGQoIKIKHbPgXovKj_g4jVclyoPK311bbpKA%3Dw526-h296" alt="Pulpy: Fruit Match oyun ekranı" />
         </div>
-    </div>
+        <div class="spotlight-copy">
+          <p class="game-kicker" id="gameType">Bulmaca • Çiftlik</p>
+          <h2 id="gameTitle">Pulpy: Fruit Match</h2>
+          <p id="gameDesc">Meyveleri eşleştir, siparişleri tamamla, çiftliğini büyüt ve hasadını taze meyve sularına dönüştür.</p>
+          <div class="tags" id="gameTags">
+            <span class="tag">Meyve Bulmacası</span>
+            <span class="tag">Çiftlik İlerlemesi</span>
+            <span class="tag">Rahat Oynanış</span>
+          </div>
+          <a id="playLink" class="play-button" href="https://play.google.com/store/apps/details?id=com.soendx.pulpyfruitmatch" target="_blank" rel="noopener noreferrer">Google Play'de Oyna</a>
+        </div>
+      </section>
 
-    <div class="container">
-        <header>
-            <h1 class="studio-name">soendx<span>.</span></h1>
-            <div class="subtitle" data-i18n="studioSubtitle">Independent Solo Game Developer</div>
-        </header>
+      <p class="simple-note" id="simpleNote">Kartlara dokunarak oyunu seç; Google Play butonu seçili oyunun mağaza sayfasını açar.</p>
+    </main>
 
-        <main>
-            <h2 class="game-title">Flow Drift</h2>
-            <p class="game-desc" data-i18n="gameDesc">
-                Lastik yak, virajları hisset! Geliştirdiğim özgün drift evreninde mükemmel drifti yakala.
-                Mobil cihazlar için optimize edilmiş, kesintisiz ve saf sürüş deneyimi.
-            </p>
-            
-            <div class="features">
-                <div class="badge" data-i18n="badge1">Akıcı Drift Dinamikleri</div>
-                <div class="badge" data-i18n="badge2">Low-Poly Tasarım</div>
-                <div class="badge">Godot Engine</div> 
-            </div>
+    <footer>© 2026 soendx</footer>
+  </div>
 
-            <a href="https://play.google.com/store/apps/details?id=com.flowdrift.soendxgaming" target="_blank" class="cta-button" data-i18n="ctaButton">Hemen Oyna!</a>
-            
-            <div class="social-links">
-                <a href="https://instagram.com/playflowdrift" target="_blank" class="social-btn">Instagram</a>
-                <a href="https://youtube.com/@playflowdrift" target="_blank" class="social-btn">YouTube</a>
-                <a href="https://www.tiktok.com/@play_flowdrift" target="_blank" class="social-btn">Tiktok</a>
-            </div>
-        </main>
-    </div>
-
-    <footer>
-        <p><span data-i18n="contactText">İletişim:</span> <a href="mailto:soendx.entertainment@gmail.com">soendx.entertainment@gmail.com</a></p>
-        <p><span data-i18n="footerRights">&copy; 2026 soendx. Tüm hakları saklıdır.</span></p>
-    </footer>
-
-    <script>
-        const translations = {
-            "tr": {
-                "studioSubtitle": "Bağımsız Solo Oyun Geliştiricisi",
-                "gameDesc": "Lastik yak, virajları hisset! Geliştirdiğimiz özgün low-poly evreninde mükemmel drifti yakala. Mobil cihazlar için optimize edilmiş, kesintisiz ve saf sürüş deneyimi.",
-                "badge1": "Akıcı Drift Dinamikleri",
-                "badge2": "Low-Poly Tasarım",
-                "ctaButton": "Hemen Oyna!",
-                "contactText": "İletişim:",
-                "footerRights": "&copy; 2026 soendx. Tüm hakları saklıdır."
-            },
-            "en": {
-                "studioSubtitle": "Independent Solo Game Developer",
-                "gameDesc": "Burn rubber, feel the corners! Catch the perfect drift in our unique low-poly universe. Seamless and pure driving experience, optimized for mobile devices.",
-                "badge1": "Fluid Drift Dynamics",
-                "badge2": "Low-Poly Design",
-                "ctaButton": "Play Now!",
-                "contactText": "Contact:",
-                "footerRights": "&copy; 2026 soendx. All rights reserved."
-            }
-        };
-
-        function changeLanguage(lang) {
-            document.getElementById('btn-tr').classList.remove('active');
-            document.getElementById('btn-en').classList.remove('active');
-            document.getElementById('btn-' + lang).classList.add('active');
-
-            const elements = document.querySelectorAll('[data-i18n]');
-            elements.forEach(element => {
-                const key = element.getAttribute('data-i18n');
-                element.innerHTML = translations[lang][key];
-            });
-
-            document.documentElement.lang = lang;
+  <script>
+    const localeCopy = {
+      tr: {
+        documentTitle: 'soendx | Mobil Oyunlar',
+        metaDescription: 'soendx mobil oyun portföyü: Pulpy: Fruit Match ve Flow Drift.',
+        headerLabel: 'Mobil oyunlar',
+        languageLabel: 'Dil seç',
+        introEyebrow: 'Bağımsız oyunlar',
+        introTitle: 'Küçük ekranda<br>iyi hissettiren oyunlar.',
+        introDescription: 'soendx, mobilde hızlı anlaşılır ama tekrar açmak isteyeceğin oyunlar geliştirir.',
+        pickerLabel: 'Oyun seçimi',
+        pulpyCardSubtitle: 'Rahatlatıcı meyve bulmacası',
+        flowCardSubtitle: 'Saf arcade drift deneyimi',
+        pulpyIconAlt: 'Pulpy: Fruit Match uygulama ikonu',
+        flowIconAlt: 'Flow Drift uygulama ikonu',
+        playButton: "Google Play'de Oyna",
+        simpleNote: 'Kartlara dokunarak oyunu seç; Google Play butonu seçili oyunun mağaza sayfasını açar.',
+        games: {
+          pulpy: {
+            type: 'Bulmaca • Çiftlik',
+            description: 'Meyveleri eşleştir, siparişleri tamamla, çiftliğini büyüt ve hasadını taze meyve sularına dönüştür.',
+            tags: ['Meyve Bulmacası', 'Çiftlik İlerlemesi', 'Rahat Oynanış'],
+            screenshotAlt: 'Pulpy: Fruit Match oyun ekranı'
+          },
+          flow: {
+            type: 'Yarış • Arcade',
+            description: "Viraja dokun, drift'e gir, kombonu büyüt ve her turda daha yüksek puanı hedefle.",
+            tags: ['Tek Dokunuş', 'Arcade Drift', 'Hızlı Turlar'],
+            screenshotAlt: 'Flow Drift oyun ekranı'
+          }
         }
+      },
+      en: {
+        documentTitle: 'soendx | Mobile Games',
+        metaDescription: 'soendx mobile games portfolio: Pulpy: Fruit Match and Flow Drift.',
+        headerLabel: 'Mobile games',
+        languageLabel: 'Choose language',
+        introEyebrow: 'Independent games',
+        introTitle: 'Games that feel right<br>on a small screen.',
+        introDescription: 'soendx makes mobile games that are simple to pick up and worth coming back to.',
+        pickerLabel: 'Choose a game',
+        pulpyCardSubtitle: 'Relaxing fruit puzzle',
+        flowCardSubtitle: 'Pure arcade drift',
+        pulpyIconAlt: 'Pulpy: Fruit Match app icon',
+        flowIconAlt: 'Flow Drift app icon',
+        playButton: 'Play on Google Play',
+        simpleNote: 'Choose a game from the cards; the Google Play button opens the selected game’s store page.',
+        games: {
+          pulpy: {
+            type: 'Puzzle • Farm',
+            description: 'Match fruits, complete orders, grow your farm, and turn your harvest into fresh juice.',
+            tags: ['Fruit Puzzle', 'Farm Progress', 'Relaxed Play'],
+            screenshotAlt: 'Pulpy: Fruit Match game screen'
+          },
+          flow: {
+            type: 'Racing • Arcade',
+            description: 'Tap into the corner, start drifting, build your combo, and chase a higher score every run.',
+            tags: ['One Touch', 'Arcade Drift', 'Quick Runs'],
+            screenshotAlt: 'Flow Drift game screen'
+          }
+        }
+      },
+      es: {
+        documentTitle: 'soendx | Juegos móviles',
+        metaDescription: 'Portafolio de juegos móviles de soendx: Pulpy: Fruit Match y Flow Drift.',
+        headerLabel: 'Juegos móviles',
+        languageLabel: 'Elegir idioma',
+        introEyebrow: 'Juegos independientes',
+        introTitle: 'Juegos que se disfrutan<br>en una pantalla pequeña.',
+        introDescription: 'soendx crea juegos móviles que se entienden rápido y dan ganas de volver a abrir.',
+        pickerLabel: 'Elegir un juego',
+        pulpyCardSubtitle: 'Rompecabezas de frutas relajante',
+        flowCardSubtitle: 'Drift arcade puro',
+        pulpyIconAlt: 'Icono de Pulpy: Fruit Match',
+        flowIconAlt: 'Icono de Flow Drift',
+        playButton: 'Jugar en Google Play',
+        simpleNote: 'Elige un juego desde las tarjetas; el botón de Google Play abre la página de la tienda del juego seleccionado.',
+        games: {
+          pulpy: {
+            type: 'Puzle • Granja',
+            description: 'Combina frutas, completa pedidos, haz crecer tu granja y convierte tu cosecha en jugos frescos.',
+            tags: ['Puzle de frutas', 'Progreso de granja', 'Juego relajado'],
+            screenshotAlt: 'Pantalla de juego de Pulpy: Fruit Match'
+          },
+          flow: {
+            type: 'Carreras • Arcade',
+            description: 'Toca la curva, entra en derrape, aumenta tu combo y busca una puntuación más alta en cada partida.',
+            tags: ['Un toque', 'Drift arcade', 'Partidas rápidas'],
+            screenshotAlt: 'Pantalla de juego de Flow Drift'
+          }
+        }
+      },
+      it: {
+        documentTitle: 'soendx | Giochi mobile',
+        metaDescription: 'Portfolio di giochi mobile di soendx: Pulpy: Fruit Match e Flow Drift.',
+        headerLabel: 'Giochi mobile',
+        languageLabel: 'Scegli la lingua',
+        introEyebrow: 'Giochi indipendenti',
+        introTitle: 'Giochi piacevoli<br>su un piccolo schermo.',
+        introDescription: 'soendx crea giochi mobile facili da capire e a cui viene voglia di tornare.',
+        pickerLabel: 'Scegli un gioco',
+        pulpyCardSubtitle: 'Puzzle di frutta rilassante',
+        flowCardSubtitle: 'Drift arcade puro',
+        pulpyIconAlt: 'Icona di Pulpy: Fruit Match',
+        flowIconAlt: 'Icona di Flow Drift',
+        playButton: 'Gioca su Google Play',
+        simpleNote: 'Scegli un gioco dalle schede; il pulsante Google Play apre la pagina del gioco selezionato.',
+        games: {
+          pulpy: {
+            type: 'Puzzle • Fattoria',
+            description: 'Abbina la frutta, completa gli ordini, fai crescere la tua fattoria e trasforma il raccolto in succhi freschi.',
+            tags: ['Puzzle di frutta', 'Progresso fattoria', 'Gioco rilassato'],
+            screenshotAlt: 'Schermata di gioco di Pulpy: Fruit Match'
+          },
+          flow: {
+            type: 'Corsa • Arcade',
+            description: 'Tocca la curva, entra in drift, fai crescere il tuo combo e punta a un punteggio più alto a ogni corsa.',
+            tags: ['Un tocco', 'Drift arcade', 'Partite rapide'],
+            screenshotAlt: 'Schermata di gioco di Flow Drift'
+          }
+        }
+      },
+      fr: {
+        documentTitle: 'soendx | Jeux mobiles',
+        metaDescription: 'Portfolio de jeux mobiles de soendx : Pulpy: Fruit Match et Flow Drift.',
+        headerLabel: 'Jeux mobiles',
+        languageLabel: 'Choisir la langue',
+        introEyebrow: 'Jeux indépendants',
+        introTitle: 'Des jeux agréables<br>sur petit écran.',
+        introDescription: 'soendx crée des jeux mobiles faciles à comprendre et auxquels on a envie de revenir.',
+        pickerLabel: 'Choisir un jeu',
+        pulpyCardSubtitle: 'Puzzle de fruits relaxant',
+        flowCardSubtitle: 'Drift arcade pur',
+        pulpyIconAlt: 'Icône de Pulpy: Fruit Match',
+        flowIconAlt: 'Icône de Flow Drift',
+        playButton: 'Jouer sur Google Play',
+        simpleNote: 'Choisissez un jeu depuis les cartes ; le bouton Google Play ouvre la page de la boutique du jeu sélectionné.',
+        games: {
+          pulpy: {
+            type: 'Puzzle • Ferme',
+            description: 'Associez des fruits, complétez des commandes, développez votre ferme et transformez votre récolte en jus frais.',
+            tags: ['Puzzle de fruits', 'Progression ferme', 'Jeu relaxant'],
+            screenshotAlt: 'Écran de jeu de Pulpy: Fruit Match'
+          },
+          flow: {
+            type: 'Course • Arcade',
+            description: 'Touchez le virage, partez en drift, augmentez votre combo et visez un meilleur score à chaque course.',
+            tags: ['Un toucher', 'Drift arcade', 'Parties rapides'],
+            screenshotAlt: 'Écran de jeu de Flow Drift'
+          }
+        }
+      }
+    };
 
-        window.onload = () => {
-            const userLang = navigator.language || navigator.userLanguage; 
-            if(userLang.toLowerCase().includes('tr')) {
-                changeLanguage('tr');
-            } else {
-                changeLanguage('en');
-            }
-        };
-    </script>
+    const gameAssets = {
+      pulpy: {
+        accent: '#ffbd18',
+        title: 'Pulpy: Fruit Match',
+        screenshot: 'https://play-lh.googleusercontent.com/jf_eChNXA_0KMXRN4fyOEXhGVl-d_doSK15Aez_glq3wkV5m6_fGQoIKIKHbPgXovKj_g4jVclyoPK311bbpKA%3Dw526-h296',
+        url: 'https://play.google.com/store/apps/details?id=com.soendx.pulpyfruitmatch'
+      },
+      flow: {
+        accent: '#ff4d38',
+        title: 'Flow Drift',
+        screenshot: 'https://play-lh.googleusercontent.com/FknqS1_Nn8CgpHMgunKrIpwAqmE84LOeEMtL_8KPurmrngWRmlY04OextUK8rj2vk3oaOY-ze5YM30ljjiLFAA%3Dw526-h296',
+        url: 'https://play.google.com/store/apps/details?id=com.flowdrift.soendxgaming'
+      }
+    };
+
+    let currentGame = 'pulpy';
+    let currentLanguage = 'tr';
+
+    const elements = {
+      metaDescription: document.getElementById('metaDescription'),
+      headerLabel: document.getElementById('headerLabel'),
+      languageLabel: document.getElementById('languageLabel'),
+      languageSelect: document.getElementById('languageSelect'),
+      introEyebrow: document.getElementById('introEyebrow'),
+      introTitle: document.getElementById('introTitle'),
+      introDescription: document.getElementById('introDescription'),
+      gamePicker: document.getElementById('gamePicker'),
+      pulpyCardSubtitle: document.getElementById('pulpyCardSubtitle'),
+      flowCardSubtitle: document.getElementById('flowCardSubtitle'),
+      pulpyIcon: document.getElementById('pulpyIcon'),
+      flowIcon: document.getElementById('flowIcon'),
+      spotlight: document.getElementById('spotlight'),
+      gameShot: document.getElementById('gameShot'),
+      gameType: document.getElementById('gameType'),
+      gameTitle: document.getElementById('gameTitle'),
+      gameDesc: document.getElementById('gameDesc'),
+      gameTags: document.getElementById('gameTags'),
+      playLink: document.getElementById('playLink'),
+      simpleNote: document.getElementById('simpleNote')
+    };
+
+    function renderGame() {
+      const copy = localeCopy[currentLanguage];
+      const game = gameAssets[currentGame];
+      const gameCopy = copy.games[currentGame];
+
+      elements.spotlight.style.setProperty('--accent', game.accent);
+      elements.gameShot.src = game.screenshot;
+      elements.gameShot.alt = gameCopy.screenshotAlt;
+      elements.gameType.textContent = gameCopy.type;
+      elements.gameTitle.textContent = game.title;
+      elements.gameDesc.textContent = gameCopy.description;
+      elements.gameTags.replaceChildren(...gameCopy.tags.map(function(tagText) {
+        const badge = document.createElement('span');
+        badge.className = 'tag';
+        badge.textContent = tagText;
+        return badge;
+      }));
+      elements.playLink.href = game.url;
+      elements.playLink.textContent = copy.playButton;
+
+      document.querySelectorAll('.game-choice').forEach(function(button) {
+        const isSelected = button.dataset.game === currentGame;
+        button.classList.toggle('active', isSelected);
+        button.setAttribute('aria-pressed', String(isSelected));
+      });
+    }
+
+    function setLanguage(language, shouldStore) {
+      const copy = localeCopy[language] || localeCopy.en;
+      currentLanguage = localeCopy[language] ? language : 'en';
+
+      document.documentElement.lang = currentLanguage;
+      document.title = copy.documentTitle;
+      elements.metaDescription.content = copy.metaDescription;
+      elements.headerLabel.textContent = copy.headerLabel;
+      elements.languageLabel.textContent = copy.languageLabel;
+      elements.introEyebrow.textContent = copy.introEyebrow;
+      elements.introTitle.innerHTML = copy.introTitle;
+      elements.introDescription.textContent = copy.introDescription;
+      elements.gamePicker.setAttribute('aria-label', copy.pickerLabel);
+      elements.pulpyCardSubtitle.textContent = copy.pulpyCardSubtitle;
+      elements.flowCardSubtitle.textContent = copy.flowCardSubtitle;
+      elements.pulpyIcon.alt = copy.pulpyIconAlt;
+      elements.flowIcon.alt = copy.flowIconAlt;
+      elements.simpleNote.textContent = copy.simpleNote;
+      elements.languageSelect.value = currentLanguage;
+
+      renderGame();
+
+      if (shouldStore) {
+        try { localStorage.setItem('soendxLanguage', currentLanguage); } catch (error) { /* Storage is optional. */ }
+      }
+    }
+
+    function selectGame(key) {
+      if (!gameAssets[key]) return;
+      currentGame = key;
+      renderGame();
+    }
+
+    document.querySelectorAll('.game-choice').forEach(function(button) {
+      button.addEventListener('click', function() {
+        selectGame(button.dataset.game);
+      });
+    });
+
+    elements.languageSelect.addEventListener('change', function() {
+      setLanguage(this.value, true);
+    });
+
+    (function initializeSite() {
+      let savedLanguage = null;
+      try { savedLanguage = localStorage.getItem('soendxLanguage'); } catch (error) { /* Storage is optional. */ }
+      const browserLanguage = (navigator.language || 'en').toLowerCase().split('-')[0];
+      const initialLanguage = localeCopy[savedLanguage] ? savedLanguage : (localeCopy[browserLanguage] ? browserLanguage : 'en');
+      setLanguage(initialLanguage, false);
+    }());
+  </script>
 </body>
 </html>
